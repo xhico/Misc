@@ -3,6 +3,9 @@
 
 import base64
 import json
+import socket
+
+import yagmail
 
 
 def get911(key):
@@ -37,3 +40,42 @@ def get911(key):
 
     # Look up the given key in the decoded JSON data and return its value
     return data[key]
+
+
+def sendErrorEmail(script, msg):
+    """
+    Sends an error email notification using Yagmail.
+
+    This function sends an email to the designated receiver to notify about an error
+    that occurred during script execution. The email subject includes the hostname,
+    the word "Error," and the name of the script that encountered the error.
+
+    Args:
+        script (str): The name or identifier of the script where the error occurred.
+        msg (str): The error message or details to be included in the email body.
+
+    Returns:
+        None
+
+    Raises:
+        None
+
+    Note:
+        - This function requires Yagmail to be properly configured with the sender's
+          email credentials and the appropriate permissions.
+        - The email configuration is retrieved using the 'get911' function, which
+          should be defined elsewhere in the code.
+    """
+    # Get the uppercase hostname of the current machine
+    hostname = str(socket.gethostname()).upper()
+
+    # Retrieve necessary email configuration using 'get911'
+    EMAIL_USER = get911('EMAIL_USER')
+    EMAIL_APPPW = get911('EMAIL_APPPW')
+    EMAIL_RECEIVER = get911('EMAIL_RECEIVER')
+
+    # Initialize a Yagmail SMTP instance
+    YAGMAIL = yagmail.SMTP(EMAIL_USER, EMAIL_APPPW)
+
+    # Send the error email
+    YAGMAIL.send(EMAIL_RECEIVER, f"{hostname} - Error - {script}", msg)
