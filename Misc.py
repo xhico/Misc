@@ -42,7 +42,7 @@ def get911(key):
     return data[key]
 
 
-def sendEmail(subject, body):
+def sendEmail(subject, body, attachments=None):
     """
     Sends an email notification using Yagmail.
 
@@ -51,6 +51,7 @@ def sendEmail(subject, body):
     Args:
         subject (str): subject of email
         body (str): body of email
+        attachments (str): attachments of email (optional)
 
     Returns:
         None
@@ -76,4 +77,4 @@ def sendEmail(subject, body):
     YAGMAIL = yagmail.SMTP(EMAIL_USER, EMAIL_APPPW)
 
     # Send the error email
-    YAGMAIL.send(EMAIL_RECEIVER, hostname + " - " + subject, body)
+    YAGMAIL.send(EMAIL_RECEIVER, hostname + " - " + subject, body, attachments)
