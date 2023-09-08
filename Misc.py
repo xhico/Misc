@@ -42,17 +42,15 @@ def get911(key):
     return data[key]
 
 
-def sendErrorEmail(script, msg):
+def sendEmail(subject, body):
     """
-    Sends an error email notification using Yagmail.
+    Sends an email notification using Yagmail.
 
-    This function sends an email to the designated receiver to notify about an error
-    that occurred during script execution. The email subject includes the hostname,
-    the word "Error," and the name of the script that encountered the error.
+    This function sends an email to the designated receiver.
 
     Args:
-        script (str): The name or identifier of the script where the error occurred.
-        msg (str): The error message or details to be included in the email body.
+        subject (str): subject of email
+        body (str): body of email
 
     Returns:
         None
@@ -78,4 +76,4 @@ def sendErrorEmail(script, msg):
     YAGMAIL = yagmail.SMTP(EMAIL_USER, EMAIL_APPPW)
 
     # Send the error email
-    YAGMAIL.send(EMAIL_RECEIVER, f"{hostname} - Error - {script}", msg)
+    YAGMAIL.send(EMAIL_RECEIVER, hostname + " - " + subject, body)
