@@ -24,6 +24,20 @@ def detectInternetInterface():
     return subprocess.getoutput("nmcli c | awk 'NR==2 {print $(NF-1)}'")
 
 
+def restartInternetInterface():
+    """
+    Restarts the detected internet interface using 'nmcli connection down' and 'nmcli connection up'.
+
+    The function first detects the current internet interface using the detectInternetInterface() function.
+    It then uses 'nmcli connection down' to deactivate the interface and 'nmcli connection up' to reactivate it.
+
+    Note:
+    Ensure that 'nmcli' is available on the system, and the interface activation requires 'sudo' privileges.
+    """
+    interface = detectInternetInterface()
+    subprocess.call("sudo nmcli connection down " + interface + " && " + "sudo nmcli connection up " + interface)
+
+
 def get911(key):
     """
     Given a key, reads a file located at /home/pi/.911 that contains encoded JSON data.
