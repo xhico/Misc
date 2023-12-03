@@ -3,6 +3,7 @@
 
 import base64
 import json
+import os
 import socket
 import subprocess
 import yagmail
@@ -35,7 +36,7 @@ def restartInternetInterface():
     Ensure that 'nmcli' is available on the system, and the interface activation requires 'sudo' privileges.
     """
     interface = detectInternetInterface()
-    subprocess.call("sudo nmcli connection down " + interface + " && " + "sudo nmcli connection up " + interface)
+    os.system("sudo nmcli connection down " + interface + " && " + "sudo nmcli connection up " + interface)
 
 
 def get911(key):
