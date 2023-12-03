@@ -4,8 +4,24 @@
 import base64
 import json
 import socket
-
+import subprocess
 import yagmail
+
+
+def detectInternetInterface():
+    """
+    Detects the internet interface by executing the 'nmcli c' command and parsing the output.
+
+    The function uses subprocess to run the 'nmcli c' command, extracts the second line of the output,
+    and retrieves the second-to-last field, which is assumed to contain the internet interface type.
+
+    Returns:
+    str: The internet interface type.
+
+    Note:
+    Ensure that 'nmcli' is available on the system, and the command provides the expected output format.
+    """
+    return subprocess.getoutput("nmcli c | awk 'NR==2 {print $(NF-1)}'")
 
 
 def get911(key):
