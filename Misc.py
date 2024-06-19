@@ -6,6 +6,7 @@ import json
 import socket
 import subprocess
 
+import requests
 import yagmail
 
 
@@ -85,13 +86,43 @@ def sendEmail(subject, body, attachments=None):
     # Get the uppercase hostname of the current machine
     hostname = str(socket.gethostname()).upper()
 
-    # Retrieve necessary email configuration using 'get911'
-    EMAIL_USER = get911('EMAIL_USER')
-    EMAIL_APPPW = get911('EMAIL_APPPW')
-    EMAIL_RECEIVER = get911('EMAIL_RECEIVER')
+    # Retrieve the necessary email configuration using 'get911'
+    EMAIL_USER = get911("EMAIL_USER")
+    EMAIL_APPPW = get911("EMAIL_APPPW")
+    EMAIL_RECEIVER = get911("EMAIL_RECEIVER")
 
     # Initialize a Yagmail SMTP instance
     YAGMAIL = yagmail.SMTP(EMAIL_USER, EMAIL_APPPW)
 
     # Send the error email
-    YAGMAIL.send(EMAIL_RECEIVER, hostname + " - " + subject, body, attachments)
+    YAGMAIL.send(EMAIL_RECEIVER, f"{hostname} - {subject}", body, attachments)
+
+
+def sendNotification(subject, body, attachments=None):
+    """
+    Sends a notification with a subject, body, and optional attachments to a specified notification service.
+
+    Parameters:
+    subject (str): The subject of the notification.
+    body (str): The body of the notification.
+    attachments (str, optional): The path to a file to be attached to the notification. Defaults to None.
+
+    Returns:
+    None
+    """
+
+    # Get the uppercase hostname of the current machine
+    hostname = str(socket.gethostname()).upper()
+
+    # Retrieve the necessary NTFY configuration using 'get911'
+    NTFY_URL = get911("NTFY_URL")
+    NTFY_TOKEN = get911("NTFY_TOKEN")
+
+    # Prepare headers for the request, including authorization and the title with hostname and subject
+    headers = {"Authorization": f"Bearer {NTFY_TOKEN}", "Title": f"{hostname} - {subject}"}
+
+    # Prepare the data for the request; if there are attachments, read the file in binary mode
+    data = f"{body}" if not attachments else open(attachments, "rb")
+
+    # Send the notification via a POST request to the specified NTFY_URL
+    requests.post(NTFY_URL, data=data, headers=headers)
