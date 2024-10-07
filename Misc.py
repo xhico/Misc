@@ -100,8 +100,11 @@ def sendEmail(subject, body, attachments=None):
     # Initialize a Yagmail SMTP instance
     YAGMAIL = yagmail.SMTP(EMAIL_USER, EMAIL_APPPW)
 
+    # Set subject
+    subject = f"{hostname} - {subject}" if not hostname.endswith("docker") else subject
+
     # Send the error email
-    YAGMAIL.send(EMAIL_RECEIVER, f"{hostname} - {subject}", body, attachments)
+    YAGMAIL.send(EMAIL_RECEIVER, subject, body, attachments)
 
 
 def sendNotification(subject, body, attachments=None):
